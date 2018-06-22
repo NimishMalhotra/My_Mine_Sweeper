@@ -112,14 +112,13 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
             int neighbour_1 = num1 + arr1[i];
             int neighbour_2 = num2 + arr2[i];
             if(checkBound(neighbour_1,neighbour_2)){
-                myButton button = board[neighbour_1][neighbour_2];
-                int count = button.arrcount;
-                int [] array1 = button.getArr1();
-                int [] array2 = button.getArr2();
+                int count = myButton.arrcount;
+                int [] array1 = myButton.getArr1();
+                int [] array2 = myButton.getArr2();
                 array1[count] = neighbour_1;
                 array2[count] = neighbour_2;
                 count++;
-                button.setArrcount(count);
+                myButton.setArrcount(count);
             }
         }
     }
@@ -191,8 +190,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
             button.setTextColor(Color.BLUE);
             button.isRevealed = true;
             button.setEnabled(false);
-        }
-        if(button.getVal()==-1){
+        }else if(button.getVal()==-1){
             button.isRevealed = true;
             button.setEnabled(false);
             for(int i=0;i<SIZE;i++){
@@ -211,6 +209,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
                 }
             }
             Toast.makeText(this, "GAME OVER", Toast.LENGTH_LONG).show();
+            return;
         }else if(button.getVal()==0) {
             button.isRevealed=true;
             button.setEnabled(false);
@@ -222,9 +221,39 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
                 int num1 = list1[i];
                 int num2 = list2[i];
                 myButton z = board[num1][num2];
-                if(z.getVal()==0 && !z.visited()){
+                if(!z.visited()){
                     reveal(z);
                 }
+            }
+        }
+        checkGameStatus();
+    }
+    public void checkGameStatus(){
+        int indicator = 0 ;
+        for(int i=0;i<SIZE;i++){
+            for(int j=0;j<SIZE;j++){
+                myButton myButton = board[i][j];
+                if(myButton.getVal()!=-1){
+                    if(myButton.isRevealed==false){
+                        indicator++;
+                        break;
+                    }
+                }
+            }
+        }
+        if(indicator==0){
+            Toast.makeText(this, "You Won The Game", Toast.LENGTH_LONG).show();
+            disableAll();
+        }else{
+            return;
+        }
+
+    }
+    public void disableAll(){
+        for(int i=0;i<SIZE;i++){
+            for(int j=0;j<SIZE;j++){
+                myButton myButton = board[i][j];
+                myButton.setEnabled(false);
             }
         }
     }
